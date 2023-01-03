@@ -5,9 +5,11 @@ const PostItem = (props) => {
   //   console.log(title);
   //   console.log(body);
   return (
-    <div>
-      <h2>{title}</h2>
-      <p>{body}</p>
+    <div className="card m-3" style={{ width: "18rem" }}>
+      <div className="card-body">
+        <h5 className="card-title">{title}</h5>
+        <p className="card-text">{body}.</p>
+      </div>
     </div>
   );
 };

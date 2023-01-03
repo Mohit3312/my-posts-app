@@ -6,13 +6,17 @@ import PostItem from "./PostItem";
 const Posts = () => {
   const [searchText, setSearchText] = useState("");
   const dispatch = useDispatch();
-  const { data } = useSelector((state) => state.posts);
-  const [filteredPosts, setFilteredPosts] = useState([]);
-  console.log(searchText);
+  const { data, status } = useSelector((state) => state.posts);
+  const [filteredPosts, setFilteredPosts] = useState(data);
+
   useEffect(() => {
     dispatch(fetchPosts());
     // eslint-disable-next-line
   }, []);
+
+  useEffect(() => {
+    setFilteredPosts(data);
+  }, [data]);
 
   const searchSubmit = () => {
     if (searchText !== "") {
@@ -21,31 +25,40 @@ const Posts = () => {
           return post.title.includes(searchText);
         })
       );
+    } else {
+      setFilteredPosts(data);
     }
   };
   return (
     <div>
-      <input
-        type="text"
-        onChange={(e) => {
-          setSearchText(e.target.value);
-        }}
-        name="search"
-        id="search"
-        value={searchText}
-      />
-      <button id="submit" onClick={searchSubmit}>
-        Search Post
-      </button>
-      {searchText === ""
-        ? data.map((post) => {
-            return <PostItem key={post.id} post={post} />;
-          })
-        : filteredPosts.length === 0
-        ? "No Post with this title"
-        : filteredPosts.map((post) => {
-            return <PostItem key={post.id} post={post} />;
-          })}
+      <div className="text-center my-4">
+        <input
+          type="text"
+          onChange={(e) => {
+            setSearchText(e.target.value);
+          }}
+          name="search"
+          id="search"
+          value={searchText}
+          className="me-3"
+        />
+        <button
+          className="btn btn-sm btn-primary"
+          id="submit"
+          onClick={searchSubmit}
+        >
+          Search Post
+        </button>
+      </div>
+      <div className="d-flex flex-wrap justify-content-center">
+        {status === "loading"
+          ? "Posts are loading"
+          : filteredPosts.length !== 0
+          ? filteredPosts.map((post) => {
+              return <PostItem key={post.id} post={post} />;
+            })
+          : "No post with this title"}
+      </div>
     </div>
   );
 };
